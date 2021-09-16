@@ -5,19 +5,19 @@ services:
     image: postgres
     restart: always
     volumes:
-      - db:/var/lib/postgresql/data
+      - ./path/to/db/data:/var/lib/postgresql/data
     env_file:
       - db.env
 
   redis:
-    image: redis:alpine
+    image: redis
     restart: always
 
   app:
     image: nextcloud:fpm-alpine
     restart: always
     volumes:
-      - nextcloud:/var/www/html
+      - ./path/to/nextcloud/data:/var/www/html
     environment:
       - POSTGRES_HOST=db
       - REDIS_HOST=redis
@@ -34,7 +34,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - nextcloud:/var/www/html:ro
+      - ./path/to/nextcloud/data:/var/www/html:ro
       - ./certs:/certs
       - ./web/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
@@ -44,13 +44,8 @@ services:
     image: nextcloud:fpm-alpine
     restart: always
     volumes:
-      - nextcloud:/var/www/html
+      - ./path/to/nextcloud/data:/var/www/html
     entrypoint: /cron.sh
     depends_on:
       - db
       - redis
-
-volumes:
-  db:
-  nextcloud:
-
